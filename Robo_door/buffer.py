@@ -17,7 +17,7 @@ class ReplayBuffer():
         index = self.mem_ctr % self.mem_size
 
         self.state_memory[index] = state
-        self.next_state_memory[index] = next_state
+        self.new_state_memory[index] = next_state
         self.action_memory[index] = action
         self.reward_memory[index] = reward
         self.terminal_memory[index] = done
@@ -29,9 +29,9 @@ class ReplayBuffer():
         batch = np.random.choice(max_mem, batch_size)
 
         states = self.state_memory[batch]
-        next_states = self.next_satte_memory[batch]
+        next_states = self.new_state_memory[batch]
         actions = self.action_memory[batch]
-        reards = self.reward_memory[batch]
+        rewards = self.reward_memory[batch]
         dones = self.terminal_memory[batch]
 
         return states, actions, rewards, next_states, dones

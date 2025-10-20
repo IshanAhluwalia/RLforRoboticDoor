@@ -11,6 +11,7 @@ from buffer import ReplayBuffer
 
 
 if __name__ == '__main__':
+
     if not os.path.exists("tmp/robo"):
         os.makedirs("tmp/robo")
 
@@ -32,10 +33,43 @@ if __name__ == '__main__':
 
     env = GymWrapper(env)
 
-'''
-    critic_network = CriticNetwork([8], 8)
-    actor_network = ActorNetwork([8], 8)
+    actor_learning_rate = 0.001
+    critic_learning_rate = 0.001
+    batch_size = 100
+    layer_1_size = 256
+    layer_2_size = 128
 
-    replay_buffer = ReplayBuffer(8, [8], 8)
-'''
+    agent = Agent(actor_learning_rate = actor_learning_rate, 
+                critic_learning_rate = critic_learning_rate, 
+                tau = 0.005, 
+                input_dims=env.observation_space.shape, 
+                env=env,
+                n_actions=env.action_space.shape[0],
+                layer_1_size=layer_1_size,
+                layer_2_size=layer_2_size,
+                batch_size=batch_size,
+                noise=0.1)
+    
+    writer = SummaryWriter(f'logs/PPO')
+    n_games = 10000
+    best_score = 0
+    episode_identifier = f"0 - actor_learning_rate={actor_learning_rate} critic_learning_rate = {critic_learning_rate}"
+
+    for i in range(n_games):
+        score = 0
+        done = False
+        observation = env.reset()
+        while not done:
+            action = agent.choose_action(observation)
+            next_observation, reward, done, info = env.step(action)
+            score += reward
+            agent.remember(observation, action, reward, next_observation, done)
+            agent.learn()
+        
+        writer.add_scalar(f"Score - {episode_identifier}", score, global_step=i)
+
+        if i % 10 == 0:
+            agent.save_models()
+        
+        print(f"episode: {i} score: {score}")
 

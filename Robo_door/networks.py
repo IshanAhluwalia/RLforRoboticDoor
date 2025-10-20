@@ -15,7 +15,7 @@ class CriticNetwork(nn.Module):
         fc1_dims=256,
         fc2_dims=128,
         name='critic',
-        checkpoint_dir='tmp/Robo',
+        checkpoint_dir='tmp/robo',
         learning_rate=1e-3
     ):
         super(CriticNetwork, self).__init__()
@@ -63,7 +63,7 @@ class ActorNetwork(nn.Module):
         fc2_dims=128,
         n_actions=2,
         name='actor',
-        checkpoint_dir='tmp/Robo',
+        checkpoint_dir='tmp/robo',
         learning_rate=1e-3
     ):
         super(ActorNetwork, self).__init__()
